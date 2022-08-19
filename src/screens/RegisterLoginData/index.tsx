@@ -19,9 +19,10 @@ import {
 import { StackNavigationProp } from '@react-navigation/stack';
 
 interface FormData {
-  service_name: string;
-  email: string;
-  password: string;
+  [name: string]: any;
+  // service_name: string;
+  // email: string;
+  // password: string;
 }
 
 const schema = Yup.object().shape({
@@ -55,9 +56,22 @@ export function RegisterLoginData() {
       ...formData
     }
 
-    const dataKey = '@savepass:logins';
+    try{
+      const dataKey = '@savepass:logins';
+      const response = await AsyncStorage.getItem(dataKey)
+      const currentData = response ? JSON.parse(response) : []
+  
+      const dataFormatted =[
+        ...currentData,
+        newLoginData
+      ]
 
-    // Save data on AsyncStorage and navigate to 'Home' screen
+      await AsyncStorage.setItem(dataKey, JSON.stringify(dataFormatted))
+
+      navigate('Home')
+    } catch (err){
+      console.log(err)
+    }
   }
 
   return (
@@ -73,10 +87,7 @@ export function RegisterLoginData() {
             testID="service-name-input"
             title="Nome do serviço"
             name="service_name"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.name && errors.name.message}
             control={control}
             autoCapitalize="sentences"
             autoCorrect
@@ -85,10 +96,7 @@ export function RegisterLoginData() {
             testID="email-input"
             title="E-mail ou usuário"
             name="email"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.email && errors.email.message}
             control={control}
             autoCorrect={false}
             autoCapitalize="none"
@@ -98,10 +106,7 @@ export function RegisterLoginData() {
             testID="password-input"
             title="Senha"
             name="password"
-            error={
-              // Replace here with real content
-              'Has error ? show error message'
-            }
+            error={errors.password && errors.password.message}
             control={control}
             secureTextEntry
           />
