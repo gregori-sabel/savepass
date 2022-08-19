@@ -87,7 +87,7 @@ export function RegisterLoginData() {
             testID="service-name-input"
             title="Nome do serviço"
             name="service_name"
-            error={errors.name && errors.name.message}
+            error={errors.service_name && errors.service_name.message}
             control={control}
             autoCapitalize="sentences"
             autoCorrect
